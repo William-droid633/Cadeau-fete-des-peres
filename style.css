@@ -1,0 +1,198 @@
+:root{
+    --ink:#050505;
+    --white:#f4f4f4;
+    --red:#e10600;
+    --red-deep:#9c0400;
+    --muted:rgba(244,244,244,.55);
+    --faint:rgba(244,244,244,.30);
+    --line:rgba(225,6,0,.45);
+    --glass:rgba(12,8,8,.5);
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+    overflow:hidden;
+    background:var(--ink);
+    color:var(--white);
+    font-family:"Chakra Petch","Inter",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    letter-spacing:.04em;
+}
+
+/* ---------- Décor ---------- */
+#space{
+    position:fixed; inset:0; z-index:0;
+    background:
+        radial-gradient(1100px 700px at 78% 22%, rgba(225,6,0,.10), transparent 60%),
+        radial-gradient(900px 600px at 20% 80%, rgba(120,140,255,.06), transparent 60%),
+        radial-gradient(circle at 50% 45%, #0a0708 0%, #040303 70%, #000 100%);
+}
+#canvas-container{ position:fixed; inset:0; z-index:1; }
+#canvas-container canvas{ display:block; }
+
+/* Grille Mensch-Maschine en perspective */
+#grid{
+    position:fixed; left:0; right:0; bottom:0; height:42vh; z-index:2; pointer-events:none;
+    background-image:
+        linear-gradient(rgba(225,6,0,.18) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(225,6,0,.18) 1px, transparent 1px);
+    background-size:46px 46px;
+    transform:perspective(420px) rotateX(68deg);
+    transform-origin:bottom center;
+    -webkit-mask-image:linear-gradient(to top, #000 0%, transparent 90%);
+    mask-image:linear-gradient(to top, #000 0%, transparent 90%);
+    opacity:.5;
+}
+/* Lignes de balayage (oscilloscope/CRT) */
+#scan{
+    position:fixed; inset:0; z-index:3; pointer-events:none; opacity:.5;
+    background:repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0, rgba(0,0,0,0) 2px, rgba(0,0,0,.16) 3px);
+}
+#vignette{
+    position:fixed; inset:0; z-index:3; pointer-events:none;
+    background:radial-gradient(120% 120% at 50% 45%, transparent 52%, rgba(0,0,0,.62) 100%);
+}
+
+/* ---------- Robots (Die Roboter) ---------- */
+.robots{ display:flex; gap:14px; align-items:flex-end; }
+.robot{ width:30px; height:60px; display:block; transition:transform .05s linear; }
+.loader-robots{ margin-bottom:6px; }
+.loader-robots .robot{ width:38px; height:76px; }
+
+/* ---------- Chargement ---------- */
+#loader{
+    position:fixed; inset:0; z-index:50;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+    background:var(--ink); transition:opacity .9s ease;
+}
+#loader.hidden{ opacity:0; pointer-events:none; }
+.loader-title{
+    font-weight:700; font-size:clamp(22px,4vw,40px); letter-spacing:.34em;
+    color:var(--white); text-shadow:0 0 26px rgba(225,6,0,.4);
+}
+.loader-text{ font-family:"VT323",monospace; font-size:18px; letter-spacing:.22em; color:var(--red); }
+.loader-pct{ font-family:"VT323",monospace; font-size:18px; color:var(--faint); }
+
+/* ---------- HUD ---------- */
+#hud{
+    position:fixed; inset:0; z-index:10; pointer-events:none;
+    padding:clamp(16px,2.4vw,30px);
+    display:flex; flex-direction:column; justify-content:space-between;
+}
+.corner{ position:fixed; width:24px; height:24px; opacity:.6; }
+.corner.tl{ top:16px; left:16px; border-top:2px solid var(--line); border-left:2px solid var(--line); }
+.corner.tr{ top:16px; right:16px; border-top:2px solid var(--line); border-right:2px solid var(--line); }
+.corner.bl{ bottom:46px; left:16px; border-bottom:2px solid var(--line); border-left:2px solid var(--line); }
+.corner.br{ bottom:46px; right:16px; border-bottom:2px solid var(--line); border-right:2px solid var(--line); }
+
+.hud-top{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.tag{ font-size:12px; letter-spacing:.24em; color:var(--muted); }
+.tag b{ color:var(--white); }
+.top-right{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
+.clock{ font-family:"VT323",monospace; font-size:18px; color:var(--red); letter-spacing:.1em; }
+.status{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:11px; letter-spacing:.2em; color:var(--muted);
+    padding:6px 13px; background:var(--glass); border:1px solid var(--line);
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.status .dot{ width:8px; height:8px; background:var(--faint); }
+.status.online{ color:var(--red); border-color:var(--red); }
+.status.online .dot{ background:var(--red); animation:blink 1s steps(2) infinite; }
+@keyframes blink{ 50%{ opacity:.25; } }
+
+/* Centre */
+.hud-center{ align-self:center; text-align:center; max-width:min(94vw,680px); margin:auto 0; transform:translateY(-3vh); }
+.eyebrow{ font-family:"VT323",monospace; font-size:clamp(15px,2vw,20px); letter-spacing:.2em; color:var(--red); margin-bottom:16px; }
+#title{
+    font-weight:700; font-size:clamp(44px,9vw,104px); line-height:.96; letter-spacing:.1em;
+    color:var(--white); text-shadow:0 0 40px rgba(225,6,0,.35);
+    transition:color .6s ease, text-shadow .6s ease;
+}
+#title.reveal{ color:var(--red); text-shadow:0 2px 26px rgba(0,0,0,.85),0 0 46px rgba(225,6,0,.6); }
+#desc{ margin-top:16px; font-size:clamp(14px,1.7vw,17px); line-height:1.55; color:var(--muted); }
+.dateline{
+    margin-top:14px; font-family:"VT323",monospace; font-size:19px; letter-spacing:.16em; color:var(--white);
+    opacity:0; transform:translateY(6px); transition:opacity .7s ease .2s, transform .7s ease .2s;
+}
+.dateline.show{ opacity:1; transform:translateY(0); }
+
+/* Barre de construction Dyson */
+.progress{ width:min(360px,80vw); margin:24px auto 0; }
+.progress-label{ display:flex; justify-content:space-between; font-family:"VT323",monospace; font-size:15px; letter-spacing:.12em; color:var(--muted); margin-bottom:6px; }
+.progress-track{ height:6px; background:rgba(244,244,244,.1); border:1px solid var(--line); }
+.progress-fill{ height:100%; width:12%; background:var(--red); box-shadow:0 0 14px rgba(225,6,0,.7); transition:width .2s linear; }
+
+#btn{
+    pointer-events:auto; margin-top:28px;
+    font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:14px; letter-spacing:.2em;
+    color:var(--white); padding:15px 34px; background:var(--glass);
+    border:2px solid var(--red); cursor:pointer;
+    backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); transition:.25s ease;
+}
+#btn:hover{ color:var(--ink); background:var(--red); box-shadow:0 0 32px rgba(225,6,0,.55); }
+#btn.gone{ opacity:0; transform:translateY(8px); pointer-events:none; }
+
+/* Bas */
+.hud-bottom{ display:flex; justify-content:space-between; align-items:flex-end; gap:16px; margin-bottom:8px; }
+.telemetry{ display:flex; gap:8px; flex-wrap:wrap; }
+.cell{
+    display:flex; flex-direction:column; gap:4px; padding:9px 13px; min-width:104px;
+    background:var(--glass); border:1px solid var(--line);
+    backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+.cell .k{ font-family:"VT323",monospace; font-size:13px; letter-spacing:.1em; color:var(--faint); }
+.cell .v{ font-family:"VT323",monospace; font-size:21px; color:var(--white); }
+.cell .v.num{ color:var(--red); }
+
+.scope-box{ display:flex; flex-direction:column; align-items:flex-end; gap:5px; }
+#scope{
+    width:230px; height:62px; background:rgba(8,4,4,.55);
+    border:1px solid var(--line); display:block;
+}
+.scope-label{ font-family:"VT323",monospace; font-size:13px; letter-spacing:.1em; color:var(--faint); }
+
+/* Scène des robots */
+.robots-stage{
+    position:fixed; left:50%; bottom:54px; transform:translateX(-50%);
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+}
+.robots-cap{ font-family:"VT323",monospace; font-size:13px; letter-spacing:.22em; color:var(--faint); }
+
+#sound{
+    pointer-events:auto; position:fixed; top:clamp(64px,9vh,92px); right:clamp(16px,2.4vw,30px);
+    width:38px; height:38px; display:none; align-items:center; justify-content:center;
+    background:var(--glass); border:1px solid var(--red); color:var(--red);
+    font-size:15px; cursor:pointer; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+}
+#sound.show{ display:inline-flex; }
+#sound.muted{ color:var(--faint); border-color:var(--faint); }
+
+/* ---------- Bandeau défilant ---------- */
+#ticker{
+    position:fixed; left:0; right:0; bottom:0; z-index:11; height:34px; overflow:hidden;
+    background:var(--red); border-top:2px solid #000;
+    display:flex; align-items:center;
+}
+.ticker-move{
+    white-space:nowrap; will-change:transform;
+    font-family:"VT323",monospace; font-size:19px; letter-spacing:.14em; color:var(--ink);
+    animation:ticker 38s linear infinite;
+}
+@keyframes ticker{ from{ transform:translateX(0); } to{ transform:translateX(-50%); } }
+
+/* ---------- Responsive ---------- */
+@media (max-width:760px){
+    .hud-bottom{ flex-direction:column; align-items:stretch; gap:12px; }
+    .scope-box{ align-items:flex-start; }
+    .telemetry{ justify-content:space-between; }
+    .cell{ flex:1; min-width:0; }
+    .robots-stage{ display:none; }
+    .corner.bl{ bottom:44px; } .corner.br{ bottom:44px; }
+}
+@media (max-width:440px){
+    .top-right{ flex-direction:row; align-items:center; gap:8px; }
+    #scope{ width:100%; }
+    .cell .v{ font-size:18px; }
+}

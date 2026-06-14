@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050505">
+<meta name="description" content="Die Mensch-Maschine · Spacelab — une sphère de Dyson autour de la Terre, pour la fête des pères. Hommage à Kraftwerk.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23050505'/><rect x='28' y='14' width='44' height='30' fill='%23f4f4f4'/><rect x='30' y='52' width='40' height='34' fill='%23e10600'/><polygon points='50,52 44,78 56,78' fill='%23050505'/></svg>">
+
+<title>DIE MENSCH-MASCHINE · SPACELAB — Bonne fête Papa</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div id="space"></div>
+<div id="canvas-container"></div>
+<div id="grid"></div>
+<div id="scan"></div>
+<div id="vignette"></div>
+
+<!-- Écran de chargement -->
+<div id="loader">
+    <div class="robots loader-robots" id="loader-robots"></div>
+    <div class="loader-title">DIE MENSCH-MASCHINE</div>
+    <div class="loader-text">KLING KLANG · POUR PAPA · FÊTE DES PÈRES 2026</div>
+    <div class="loader-pct" id="loader-pct">0%</div>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+
+    <span class="corner tl"></span><span class="corner tr"></span>
+    <span class="corner bl"></span><span class="corner br"></span>
+
+    <header class="hud-top">
+        <div class="tag">KLING&nbsp;KLANG · <b>SPACELAB</b></div>
+        <div class="top-right">
+            <span class="clock" id="clock">--:--:-- UTC</span>
+            <span class="status" id="status"><span class="dot"></span><span id="status-text">STANDBY</span></span>
+        </div>
+    </header>
+
+    <section class="hud-center">
+        <p class="eyebrow" id="eyebrow">★ FÊTE DES PÈRES · DIMANCHE 21 JUIN 2026 ★</p>
+        <h1 id="title">SPACELAB</h1>
+        <p id="desc">Sphère de Dyson en construction autour de la Terre.<br>Fais tourner le globe, puis démarre la machine.</p>
+        <p id="dateline" class="dateline"></p>
+
+        <div class="progress" id="progress-wrap">
+            <div class="progress-label"><span>DYSON-SPHÄRE</span><span id="dyson-pct">12%</span></div>
+            <div class="progress-track"><div class="progress-fill" id="dyson-fill"></div></div>
+        </div>
+
+        <button id="btn">▶ DIE MASCHINE STARTEN</button>
+    </section>
+
+    <footer class="hud-bottom">
+        <div class="telemetry">
+            <div class="cell"><span class="k">ENERGIE</span><span class="v" id="energy-val">012 YW</span></div>
+            <div class="cell"><span class="k">RADIOAKTIVITÄT</span><span class="v" id="radio-val">0.41 µSv</span></div>
+            <div class="cell"><span class="k">NUMMERN</span><span class="v num" id="num-val">EINS</span></div>
+            <div class="cell"><span class="k">AUTOBAHN</span><span class="v" id="speed-val">27 600 km/h</span></div>
+        </div>
+
+        <div class="scope-box">
+            <canvas id="scope"></canvas>
+            <div class="scope-label">MUSIK&nbsp;NON&nbsp;STOP · TECHNO&nbsp;POP</div>
+        </div>
+    </footer>
+
+    <!-- Les robots (Die Roboter) qui dansent sur la musique -->
+    <div class="robots-stage">
+        <div class="robots" id="stage-robots"></div>
+        <div class="robots-cap">WIR&nbsp;SIND&nbsp;DIE&nbsp;ROBOTER</div>
+    </div>
+
+    <button id="sound" title="Son" aria-label="Son">♪</button>
+
+</div>
+
+<!-- Bandeau défilant (références Kraftwerk) -->
+<div id="ticker"><div class="ticker-move" id="ticker-move"></div></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
