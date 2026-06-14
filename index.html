@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bonne Fête Papa !</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            perspective: 1000px; /* Nécessaire pour l'effet 3D */
+        }
+
+        .card-container {
+            width: 320px;
+            height: 450px;
+            position: relative;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        /* Classe ajoutée dynamiquement par le JS pour retourner la carte */
+        .card-container.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden; /* Cache le dos quand on regarde la face */
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            color: white;
+        }
+
+        .card-front {
+            background: linear-gradient(135deg, #ff7e5f, #feb47b);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .card-back {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            transform: rotateY(180deg);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        p {
+            font-size: 1.1em;
+            line-height: 1.5;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .instruction {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 20px;
+            background: rgba(0,0,0,0.2);
+            padding: 5px 15px;
+            border-radius: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card-container" id="card">
+        <div class="card-face card-front">
+            <h1>Bonne fête Papa !</h1>
+            <div class="instruction">Touche la carte 👆</div>
+        </div>
+
+        <div class="card-face card-back">
+            <h1>Pour le meilleur père !</h1>
+            <p>Un petit cadeau codé sur mesure pour l'occasion. Merci pour tout ce que tu fais au quotidien !</p>
+            <div class="instruction">Touche pour refermer</div>
+        </div>
+    </div>
+
+    <script>
+        const card = document.getElementById('card');
+
+        card.addEventListener('click', () => {
+            // Retourne la carte
+            card.classList.toggle('is-flipped');
+
+            // Lance les confettis uniquement si on ouvre la carte (quand elle a la classe is-flipped)
+            if (card.classList.contains('is-flipped')) {
+                // Petit délai pour synchroniser avec l'animation 3D
+                setTimeout(() => {
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']
+                    });
+                }, 300);
+            }
+        });
+    </script>
+</body>
+</html>
