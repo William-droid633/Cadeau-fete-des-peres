@@ -110,7 +110,7 @@ body{
     color:var(--white); text-shadow:0 0 40px rgba(225,6,0,.35);
     transition:color .6s ease, text-shadow .6s ease;
 }
-#title.reveal{ color:var(--red); text-shadow:0 2px 26px rgba(0,0,0,.85),0 0 46px rgba(225,6,0,.6); }
+#title.reveal{ color:var(--blue); text-shadow:0 2px 26px rgba(0,0,0,.85),0 0 46px rgba(0,243,255,.1); }
 #desc{ margin-top:16px; font-size:clamp(14px,1.7vw,17px); line-height:1.55; color:var(--muted); }
 .dateline{
     margin-top:14px; font-family:"VT323",monospace; font-size:19px; letter-spacing:.16em; color:var(--white);
