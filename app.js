@@ -9,12 +9,12 @@
    --------------------------------------------------------------------- */
 const CONFIG = {
     mission:       "KLING KLANG · SPACELAB",
-    eyebrowStart:  "★ FÊTE DES PÈRES · DIMANCHE 21 JUIN 2026 ★",
+    eyebrowStart:  "★ FÊTE DES PÈRES · DIMANCHE 14 JUIN 2026 ★",
     titreStart:    "SPACELAB",
     eyebrowReveal: "DIE MENSCH-MASCHINE · FÜR PAPA",
     titreReveal:   "BONNE FÊTE PAPA",
-    messageReveal: "Mensch &amp; Maschine — et surtout le meilleur des papas.<br>Merci pour la musique. Wir sind die Roboter… mais toi, tu es unique.",
-    dateReveal:    "FÊTE DES PÈRES · DIMANCHE 21 JUIN 2026",
+    messageReveal: "Mensch &amp; Maschine — et surtout un super papa.<br> Wir sind die Roboter…",
+    dateReveal:    "FÊTE DES PÈRES · DIMANCHE 14 JUIN 2026",
     audio:         "kraftwerk.mp3",
     ticker: [
         "WIR FAHREN FAHREN FAHREN AUF DER AUTOBAHN",
