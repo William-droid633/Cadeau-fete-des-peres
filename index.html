@@ -1,46 +1,47 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORBITAL // SYSTEM_PAPA_2026</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>DYSON ARRAY // INTERSTELLAR MODE</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-    <!-- Scène 3D -->
-    <div id="canvas-container"></div>
+<div id="space"></div>
+<div id="canvas-container"></div>
 
-    <!-- Interface claire et lisible -->
-    <div id="hud-layer">
-        
-        <header class="top-panel glass-panel">
-            <div class="brand">PROJET ORBITAL // KRAFTWERK_STEURUNG</div>
-            <div class="telemetry">
-                <span>COORD: LEO (Low Earth Orbit)</span>
-                <span>ALTITUDE: 408 KM</span>
-            </div>
-        </header>
+<!-- HUD MINIMAL -->
+<div id="hud">
 
-        <main class="center-console glass-panel">
-            <h1 class="main-title" id="main-title">INITIATION SÉQUENCE</h1>
-            <p class="subtitle" id="status-desc">Synchronisation avec l'orbite terrestre en cours...</p>
-            
-            <button class="launch-btn" id="launch-trigger">
-                DÉMARRER LA TRANSMISSION
-            </button>
-        </main>
-
-        <footer class="bottom-panel glass-panel">
-            <div class="audio-status">AUDIO: EN ATTENTE</div>
-            <div class="sys-status">SYSTÈME OPÉRATIONNEL</div>
-        </footer>
-
+    <div class="top">
+        <div>DYSON TYPE-II SIMULATION</div>
+        <div id="status">STANDBY</div>
     </div>
 
-    <script src="app.js"></script>
+    <div class="center">
+        <h1 id="title">INITIALISATION</h1>
+        <p id="desc">Connexion gravitationnelle...</p>
+
+        <div class="stats">
+            <span id="temp-val">273K</span>
+            <span id="energy-val">0YW</span>
+            <span id="progress-percent">0%</span>
+        </div>
+
+        <button id="btn">ACTIVER</button>
+    </div>
+
+</div>
+
+<script src="app.js"></script>
+
 </body>
 </html>
