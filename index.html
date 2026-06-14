@@ -3,120 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bonne Fête Papa !</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <title>Initialisation // Fête des Pères 2026</title>
+    <!-- Importation des bibliothèques 3D et d'animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Police de caractères technique -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    
     <style>
         body {
             margin: 0;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            font-family: 'Poppins', sans-serif;
-            overflow: hidden;
-            perspective: 1000px; /* Nécessaire pour l'effet 3D */
+            overflow: hidden; /* Empêche le scroll */
+            background-color: #050505;
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .card-container {
-            width: 320px;
-            height: 450px;
-            position: relative;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        /* Classe ajoutée dynamiquement par le JS pour retourner la carte */
-        .card-container.is-flipped {
-            transform: rotateY(180deg);
-        }
-
-        .card-face {
+        #canvas-container {
             position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
-            backface-visibility: hidden; /* Cache le dos quand on regarde la face */
-            border-radius: 20px;
+            z-index: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 30px;
-            box-sizing: border-box;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            color: white;
+            pointer-events: none; /* Laisse passer les clics vers la 3D sauf sur les boutons */
         }
 
-        .card-front {
-            background: linear-gradient(135deg, #ff7e5f, #feb47b);
-            border: 2px solid rgba(255,255,255,0.2);
+        .title {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin: 0;
+            opacity: 0;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
         }
 
-        .card-back {
-            background: linear-gradient(135deg, #4facfe, #00f2fe);
-            transform: rotateY(180deg);
-            border: 2px solid rgba(255,255,255,0.2);
+        .subtitle {
+            font-size: clamp(1rem, 2vw, 1.5rem);
+            font-weight: 300;
+            color: #888;
+            letter-spacing: 0.2em;
+            margin-top: 10px;
+            text-transform: uppercase;
+            opacity: 0;
         }
 
-        h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        .btn {
+            pointer-events: auto;
+            margin-top: 50px;
+            padding: 15px 40px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
         }
 
-        p {
-            font-size: 1.1em;
-            line-height: 1.5;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .instruction {
-            font-size: 0.8em;
-            opacity: 0.8;
-            margin-top: 20px;
-            background: rgba(0,0,0,0.2);
-            padding: 5px 15px;
-            border-radius: 15px;
+        .btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
 
-    <div class="card-container" id="card">
-        <div class="card-face card-front">
-            <h1>Bonne fête Papa !</h1>
-            <div class="instruction">Touche la carte 👆</div>
-        </div>
+    <!-- Conteneur pour la scène 3D -->
+    <div id="canvas-container"></div>
 
-        <div class="card-face card-back">
-            <h1>Pour le meilleur père !</h1>
-            <p>Un petit cadeau codé sur mesure pour l'occasion. Merci pour tout ce que tu fais au quotidien !</p>
-            <div class="instruction">Touche pour refermer</div>
-        </div>
+    <!-- Interface utilisateur au-dessus de la 3D -->
+    <div class="ui-layer">
+        <h1 class="title">Système_Paternel</h1>
+        <p class="subtitle">Séquence d'initialisation 2026</p>
+        <button class="btn" id="trigger-btn">Déverrouiller le message</button>
     </div>
 
     <script>
-        const card = document.getElementById('card');
+        // --- 1. CONFIGURATION THREE.JS ---
+        const scene = new THREE.Scene();
+        // Brouillard pour donner de la profondeur à la scène
+        scene.fog = new THREE.FogExp2(0x050505, 0.15);
 
-        card.addEventListener('click', () => {
-            // Retourne la carte
-            card.classList.toggle('is-flipped');
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 4;
 
-            // Lance les confettis uniquement si on ouvre la carte (quand elle a la classe is-flipped)
-            if (card.classList.contains('is-flipped')) {
-                // Petit délai pour synchroniser avec l'animation 3D
-                setTimeout(() => {
-                    confetti({
-                        particleCount: 150,
-                        spread: 70,
-                        origin: { y: 0.6 },
-                        colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff']
-                    });
-                }, 300);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimisation performance
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        // --- 2. CRÉATION DES OBJETS 3D ---
+        
+        // A. Champ d'étoiles / particules
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 2000;
+        const posArray = new Float32Array(particlesCount * 3);
+        
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 15; // Dispersion
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.01,
+            color: 0x888888,
+            transparent: true,
+            opacity: 0.8
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particlesMesh);
+
+        // B. Forme centrale complexe (TorusKnot)
+        const shapeGeometry = new THREE.TorusKnotGeometry(1.2, 0.3, 150, 20);
+        // Matériau type "Terminal" filaire avec un bleu électrique subtil
+        const shapeMaterial = new THREE.MeshBasicMaterial({ 
+            color: 0x4facfe, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const mainShape = new THREE.Mesh(shapeGeometry, shapeMaterial);
+        scene.add(mainShape);
+
+        // --- 3. INTERACTION SOURIS / TOUCH ---
+        let mouseX = 0;
+        let mouseY = 0;
+        let targetX = 0;
+        let targetY = 0;
+
+        const windowHalfX = window.innerWidth / 2;
+        const windowHalfY = window.innerHeight / 2;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - windowHalfX);
+            mouseY = (e.clientY - windowHalfY);
+        });
+
+        document.addEventListener('touchmove', (e) => {
+            if(e.touches.length > 0) {
+                mouseX = (e.touches[0].clientX - windowHalfX);
+                mouseY = (e.touches[0].clientY - windowHalfY);
             }
+        });
+
+        // --- 4. BOUCLE D'ANIMATION (RENDER LOOP) ---
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            const elapsedTime = clock.getElapsedTime();
+
+            // Rotation continue des objets
+            mainShape.rotation.y += 0.002;
+            mainShape.rotation.x += 0.001;
+            
+            particlesMesh.rotation.y = -elapsedTime * 0.02;
+
+            // Effet de parallaxe lisse avec la souris
+            targetX = mouseX * 0.001;
+            targetY = mouseY * 0.001;
+            
+            camera.position.x += 0.05 * (targetX - camera.position.x);
+            camera.position.y += 0.05 * (-targetY - camera.position.y);
+            camera.lookAt(scene.position);
+
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // --- 5. GESTION DU REDIMENSIONNEMENT ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // --- 6. ANIMATIONS GSAP (UI) ---
+        
+        // Animation d'entrée au chargement
+        gsap.to('.title', { opacity: 1, y: -20, duration: 2, delay: 0.5, ease: 'power3.out' });
+        gsap.to('.subtitle', { opacity: 1, y: -20, duration: 2, delay: 1, ease: 'power3.out' });
+        gsap.to('.btn', { opacity: 1, duration: 2, delay: 1.5, ease: 'power3.out' });
+
+        // Interaction au clic du bouton
+        const btn = document.getElementById('trigger-btn');
+        btn.addEventListener('click', () => {
+            // Fait disparaître le texte actuel
+            gsap.to(['.title', '.subtitle', '.btn'], { 
+                opacity: 0, 
+                duration: 0.5, 
+                stagger: 0.1,
+                onComplete: () => {
+                    // Change le texte
+                    document.querySelector('.title').innerHTML = "MERCI POUR TOUT";
+                    document.querySelector('.subtitle').innerHTML = "Bonne fête au meilleur des pères.";
+                    btn.style.display = 'none'; // Cache le bouton
+
+                    // Fait réapparaître le nouveau texte
+                    gsap.fromTo('.title', { y: 20 }, { opacity: 1, y: 0, duration: 2, ease: 'power3.out' });
+                    gsap.fromTo('.subtitle', { y: 20 }, { opacity: 1, y: 0, duration: 2, delay: 0.5, ease: 'power3.out' });
+
+                    // Surcharge l'animation 3D pour un effet "Warp / Vitesse lumière"
+                    gsap.to(camera.position, { z: 1.5, duration: 3, ease: 'power2.inOut' });
+                    gsap.to(shapeMaterial, { opacity: 0.8, duration: 2 });
+                    gsap.to(mainShape.scale, { x: 1.5, y: 1.5, z: 1.5, duration: 3, ease: 'power2.out' });
+                }
+            });
         });
     </script>
 </body>
