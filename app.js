@@ -10,17 +10,16 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// Groupe contenant toute la structure pour la rotation globale
 const dysonSystem = new THREE.Group();
 scene.add(dysonSystem);
 
-// A. L'ÉTOILE CENTRALE (Le Cœur Nucléaire)
+// L'Étoile Centrale
 const starGeo = new THREE.SphereGeometry(0.8, 32, 32);
 const starMat = new THREE.MeshBasicMaterial({ color: 0x00ff66, wireframe: true, transparent: true, opacity: 0.2 });
 const star = new THREE.Mesh(starGeo, starMat);
 dysonSystem.add(star);
 
-// B. ANNEAUX DE DYSON (Mégastructure filaire)
+// Anneaux de Dyson
 const rings = [];
 const ringMaterials = [];
 
@@ -35,12 +34,11 @@ const createDysonRing = (radius, tube, rotX, rotY) => {
     ringMaterials.push(ringMat);
 };
 
-// Génération de 3 anneaux géants sur des axes différents
 createDysonRing(1.8, 0.04, Math.PI / 4, 0);
 createDysonRing(2.2, 0.03, -Math.PI / 4, Math.PI / 4);
 createDysonRing(2.6, 0.02, 0, Math.PI / 2);
 
-// C. CHAMP DE PARTICULES DE DONNÉES
+// Nuage de particules
 const partGeo = new THREE.BufferGeometry();
 const partCount = 1000;
 const posArray = new Float32Array(partCount * 3);
@@ -50,7 +48,7 @@ const partMat = new THREE.PointsMaterial({ size: 0.02, color: 0x00ff66, transpar
 const particles = new THREE.Points(partGeo, partMat);
 scene.add(particles);
 
-// Animation de base
+// Boucle d'animation
 const clock = new THREE.Clock();
 let activeMode = false;
 
@@ -58,7 +56,6 @@ function animate() {
     requestAnimationFrame(animate);
     const time = clock.getElapsedTime();
 
-    // Rotations mécaniques asynchrones (Style mécanique orbitale)
     star.rotation.y = time * 0.2;
     rings[0].rotation.z = time * 0.1;
     rings[1].rotation.x = time * -0.15;
@@ -66,7 +63,6 @@ function animate() {
     particles.rotation.y = time * 0.01;
 
     if (activeMode) {
-        // Pulsation hyper-rapide en mode actif
         const pulse = 1 + Math.sin(time * 15) * 0.1;
         star.scale.set(pulse, pulse, pulse);
     }
@@ -75,52 +71,28 @@ function animate() {
 }
 animate();
 
-// --- 2. SYNTHÉTISEUR AUDIO (HOMMAGE KRAFTWERK VIA WEB AUDIO API) ---
-let audioCtx = null;
-
-const playKraftwerkSynth = () => {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let step = 0;
-    
-    // Notes de la séquence (Basse minimaliste style "Radioactivity")
-    const sequence = [110, 110, 130, 146, 110, 110, 165, 146]; 
-
-    setInterval(() => {
-        if (!activeMode) return;
-
-        // 1. Générateur d'onde (Synthétiseur)
-        let osc = audioCtx.createOscillator();
-        let gainNode = audioCtx.createGain();
-        
-        // Type d'onde rétro : "sawtooth" (dent de scie) ou "square" (carrée) pour le côté robotique
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(sequence[step % sequence.length], audioCtx.currentTime);
-        
-        gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-
-        step++;
-    }, 250); // Tempo rigide (120 BPM)
-};
+// --- 2. GESTION DU FICHIER MP3 ---
+// Le navigateur charge le fichier en tâche de fond
+const kraftwerkAudio = new Audio('kraftwerk.mp3'); 
+kraftwerkAudio.loop = true; // Recommence automatiquement à la fin
+kraftwerkAudio.volume = 0.6; // Volume réglé à 60% (tu peux modifier de 0.0 à 1.0)
 
 // --- 3. SÉQUENCE D'INITIALISATION MAJESTUEUSE ---
 const trigger = document.getElementById('launch-trigger');
 
 trigger.addEventListener('click', () => {
     activeMode = true;
-    playKraftwerkSynth(); // Démarre le synthétiseur de code
 
-    // Effacement de l'interface de contrôle
+    // Lancement de la musique de Kraftwerk
+    kraftwerkAudio.play().catch(error => {
+        console.log("Le lecteur audio a rencontré un problème : ", error);
+    });
+
+    // Effacement du bouton de contrôle
     gsap.to(trigger, { opacity: 0, y: 20, duration: 0.5, pointerEvents: 'none' });
     document.getElementById('status-desc').style.display = 'none';
 
-    // Mutation visuelle immédiate de la 3D (Énergie pure)
+    // Changement de couleur de la structure 3D (Alerte / Énergie maximale)
     starMat.color.setHex(0xff0055);
     ringMaterials.forEach(m => {
         m.color.setHex(0xff0055);
@@ -128,15 +100,15 @@ trigger.addEventListener('click', () => {
     });
     partMat.color.setHex(0xffffff);
 
-    // Zoom cinématique au cœur du réacteur
+    // Zoom cinématique fluide vers l'étoile
     gsap.to(camera.position, { z: 2.8, duration: 4, ease: 'power4.inOut' });
 
-    // Simulation de la montée en puissance de la centrale (Télémétrie)
+    // Calcul de la puissance énergétique de la Sphère de Dyson
     let telemetryData = { temp: 273, energy: 0, progress: 0 };
     
     gsap.to(telemetryData, {
-        temp: 15000000, // 15 Millions de Kelvins (Température cœur du soleil)
-        energy: 384.6,  // Puissance totale d'une Sphère de Dyson en Yottawatts
+        temp: 15000000, 
+        energy: 384.6,  
         progress: 100,
         duration: 4,
         ease: 'power2.in',
@@ -146,13 +118,11 @@ trigger.addEventListener('click', () => {
             document.getElementById('progress-percent').innerText = Math.floor(telemetryData.progress) + "%";
         },
         onComplete: () => {
-            // Affichage du message final grandiose
             const title = document.getElementById('main-title');
             title.innerHTML = "SYSTEM.PAPA.MAX_POWER";
             title.style.color = "#ffffff";
             title.style.textShadow = "0 0 30px #ff0055";
 
-            // Injection du texte de remerciement à la place des sous-titres
             const infoBlock = document.createElement('div');
             infoBlock.innerHTML = "<br><br>SÉQUENCE COMPLÈTE.<br>BONNE FÊTE AU MEILLEUR DES PÈRES.<br>TRANSMISSION TERMINÉE.";
             infoBlock.style.color = "#ffffff";
@@ -163,7 +133,6 @@ trigger.addEventListener('click', () => {
     });
 });
 
-// Redimensionnement
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
