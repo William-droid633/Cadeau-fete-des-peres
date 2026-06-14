@@ -1,80 +1,94 @@
-const scene = new THREE.Scene();
-scene.fog = new THREE.FogExp2(0x050505, 0.15);
+// --- 1. SÉQUENCE DE DÉMARRAGE (BOOT) ---
+const initBootSequence = () => {
+    const tl = gsap.timeline();
+    tl.to('.progress-fill', { width: '100%', duration: 1.5, ease: 'power2.inOut' })
+      .to('.loader-text', { opacity: 0, duration: 0.2 }, "+=0.2")
+      .to('#loader', { height: 0, opacity: 0, duration: 0.8, ease: 'expo.inOut' })
+      .to('#ui-layer', { opacity: 1, duration: 1 }, "-=0.4")
+      .add(() => scrambleText(document.getElementById('main-title')), "-=0.5");
+};
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 4;
+// --- 2. EFFET DE BROUILLAGE DE TEXTE (SCRAMBLE) ---
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*';
+const scrambleText = (element) => {
+    const originalText = element.getAttribute('data-target') || element.innerText;
+    let iterations = 0;
+    const interval = setInterval(() => {
+        element.innerText = originalText.split('').map((letter, index) => {
+            if (index < iterations) return originalText[index];
+            return chars[Math.floor(Math.random() * chars.length)];
+        }).join('');
+        if (iterations >= originalText.length) clearInterval(interval);
+        iterations += 1 / 3; // Vitesse du décodage
+    }, 30);
+};
+
+// --- 3. MOTEUR 3D (THREE.JS) ---
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+camera.position.z = 5;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-// A. Nuage de particules (façon data stream)
-const particlesGeometry = new THREE.BufferGeometry();
-const particlesCount = 1500;
-const posArray = new Float32Array(particlesCount * 3);
-for(let i = 0; i < particlesCount * 3; i++) {
-    posArray[i] = (Math.random() - 0.5) * 15;
-}
-particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-const particlesMaterial = new THREE.PointsMaterial({ 
-    size: 0.02, color: 0x00ff00, transparent: true, opacity: 0.4 
-});
-const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-scene.add(particlesMesh);
-
-// B. La forme complexe (TorusKnot) en mode Kraftwerk
-const shapeGeometry = new THREE.TorusKnotGeometry(1.2, 0.4, 200, 32);
-const shapeMaterial = new THREE.MeshBasicMaterial({ 
-    color: 0x00ff00, 
+// Objet principal : TorusKnot avec AdditiveBlending pour l'effet "Glow"
+const geometry = new THREE.TorusKnotGeometry(1.5, 0.4, 256, 32);
+const material = new THREE.MeshBasicMaterial({ 
+    color: 0x00ff41, 
     wireframe: true,
     transparent: true,
-    opacity: 0.3
+    opacity: 0.15,
+    blending: THREE.AdditiveBlending // Crucial pour l'effet d'hologramme/néon
 });
-const mainShape = new THREE.Mesh(shapeGeometry, shapeMaterial);
-scene.add(mainShape);
+const mesh = new THREE.Mesh(geometry, material);
+scene.add(mesh);
 
-// C. Interaction souris / tactile
-let mouseX = 0; let mouseY = 0; let targetX = 0; let targetY = 0;
-const windowHalfX = window.innerWidth / 2; const windowHalfY = window.innerHeight / 2;
+// Particules en fond
+const particlesGeo = new THREE.BufferGeometry();
+const particlesCount = 2000;
+const posArray = new Float32Array(particlesCount * 3);
+for(let i = 0; i < particlesCount * 3; i++) {
+    posArray[i] = (Math.random() - 0.5) * 20;
+}
+particlesGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+const particlesMat = new THREE.PointsMaterial({ size: 0.015, color: 0x00ff41, transparent: true, opacity: 0.3 });
+const particlesMesh = new THREE.Points(particlesGeo, particlesMat);
+scene.add(particlesMesh);
 
-document.addEventListener('mousemove', (e) => { 
-    mouseX = (e.clientX - windowHalfX); 
-    mouseY = (e.clientY - windowHalfY); 
+// --- 4. LOGIQUE D'ANIMATION ET PARALLAXE ---
+let mouseX = 0; let mouseY = 0;
+document.addEventListener('mousemove', (e) => {
+    mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+    mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
 });
-document.addEventListener('touchmove', (e) => { 
-    if(e.touches.length > 0) { 
-        mouseX = (e.touches[0].clientX - windowHalfX); 
-        mouseY = (e.touches[0].clientY - windowHalfY); 
-    }
-});
 
-// D. Boucle d'animation
 const clock = new THREE.Clock();
-
 function animate() {
     requestAnimationFrame(animate);
-    const elapsedTime = clock.getElapsedTime();
+    const time = clock.getElapsedTime();
 
-    // Rotation infinie
-    mainShape.rotation.y += 0.003;
-    mainShape.rotation.x += 0.002;
-    particlesMesh.rotation.y = -elapsedTime * 0.05;
-    
-    // Effet de pulsation (comme un synthétiseur)
-    const scale = 1 + Math.sin(elapsedTime * 2) * 0.04;
-    mainShape.scale.set(scale, scale, scale);
+    mesh.rotation.x = time * 0.1;
+    mesh.rotation.y = time * 0.15;
+    particlesMesh.rotation.y = time * 0.02;
 
-    // Parallaxe très fluide
-    targetX = mouseX * 0.001;
-    targetY = mouseY * 0.001;
-    camera.position.x += 0.05 * (targetX - camera.position.x);
-    camera.position.y += 0.05 * (-targetY - camera.position.y);
+    // Déformation mathématique fluide (Pulsation)
+    const scale = 1 + Math.sin(time * 2) * 0.05;
+    mesh.scale.set(scale, scale, scale);
+
+    // Mouvement caméra basé sur la souris
+    camera.position.x += (mouseX * 0.5 - camera.position.x) * 0.05;
+    camera.position.y += (mouseY * 0.5 - camera.position.y) * 0.05;
     camera.lookAt(scene.position);
+
+    // Fausse variation des données CPU
+    if (Math.random() > 0.95) {
+        document.getElementById('cpu-val').innerText = Math.floor(Math.random() * 30 + 10) + '%';
+    }
 
     renderer.render(scene, camera);
 }
-animate();
 
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
@@ -82,27 +96,39 @@ window.addEventListener('resize', () => {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// E. Séquence d'activation (GSAP)
-const actionBtn = document.getElementById('action-btn');
-const typewriter = document.getElementById('typewriter');
+// --- 5. INTERACTION FINALE ---
+const btn = document.getElementById('decrypt-btn');
+const title = document.getElementById('main-title');
+const subtitle = document.getElementById('subtitle');
 
-actionBtn.addEventListener('click', () => {
-    gsap.to(actionBtn, { opacity: 0, duration: 0.3, pointerEvents: 'none', display: 'none' });
+// Effet de scramble au survol du bouton
+btn.addEventListener('mouseenter', () => scrambleText(btn.querySelector('.btn-text')));
+
+btn.addEventListener('click', () => {
+    gsap.to(btn, { opacity: 0, duration: 0.3, pointerEvents: 'none' });
     
-    gsap.to(typewriter, {
-        opacity: 0, duration: 0.3,
-        onComplete: () => {
-            typewriter.innerHTML = "SÉQUENCE VALIDÉE // TRANSMISSION...<br><br><span style='color:#ffffff; font-size: 1.8rem; font-weight: bold;'>BONNE FÊTE PAPA !</span>";
-            gsap.to(typewriter, { opacity: 1, duration: 1 });
-            
-            const title = document.querySelector('.glitch-title');
-            title.innerHTML = "MENSCH_MASCHINE";
-            title.style.color = "#ffffff";
-        }
-    });
-
-    // Effet "Hyperespace" vers la forme 3D
-    gsap.to(camera.position, { z: 1.8, duration: 2.5, ease: 'power2.inOut' });
-    gsap.to(shapeMaterial, { opacity: 0.9, duration: 2 });
-    particlesMaterial.color.setHex(0xffffff); // Particules deviennent blanches
+    // Décodage du message final
+    title.setAttribute('data-target', 'BONNE_FÊTE_PAPA');
+    scrambleText(title);
+    
+    setTimeout(() => {
+        subtitle.innerHTML = "Transmission réussie. Merci pour tout ton soutien.<br>Signé : Ton fils.";
+        gsap.fromTo(subtitle, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 1 });
+        
+        // Accélération de la 3D et changement de couleur pour marquer le succès
+        gsap.to(camera.position, { z: 2.5, duration: 2, ease: 'power3.inOut' });
+        gsap.to(material, { opacity: 0.6, duration: 1 });
+        material.color.setHex(0xff003c); // Passage au rouge
+        particlesMat.color.setHex(0xff003c);
+        
+        // Change la couleur des éléments HUD en rouge via les variables CSS
+        document.documentElement.style.setProperty('--color-main', '#ff003c');
+        document.documentElement.style.setProperty('--color-main-dim', 'rgba(255, 0, 60, 0.3)');
+    }, 1500);
 });
+
+// Lancement au chargement de la page
+window.onload = () => {
+    animate();
+    initBootSequence();
+};
