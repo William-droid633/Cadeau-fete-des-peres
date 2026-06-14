@@ -3,56 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KRAFTWERK // SYSTEM_PATER_2026</title>
+    <title>DYSON_SPHÄRE // KRAFTWERK SYSTEMS</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loader">
-        <div class="loader-text" data-text="INITIALISATION DU NOYAU...">INITIALISATION DU NOYAU...</div>
-        <div class="progress-bar"><div class="progress-fill"></div></div>
-    </div>
 
-    <div class="scanlines"></div>
+    <div class="crt-lines"></div>
     <div class="vignette"></div>
 
     <div id="canvas-container"></div>
 
-    <div id="ui-layer" style="opacity: 0;">
-        <div class="corner tl"></div><div class="corner tr"></div>
-        <div class="corner bl"></div><div class="corner br"></div>
+    <div id="hud-layer">
+        <div class="frame-border"></div>
 
-        <aside class="sidebar left-sidebar">
-            <div class="metric">
-                <span class="label">CPU.LOAD</span>
-                <span class="value" id="cpu-val">12%</span>
-            </div>
-            <div class="metric">
-                <span class="label">MEM.ALLOC</span>
-                <span class="value">0x4F2A</span>
-            </div>
-            <div class="metric">
-                <span class="label">NET.UPLINK</span>
-                <span class="value" style="color: var(--color-alert)">STABLE</span>
-            </div>
-        </aside>
+        <header class="hud-header">
+            <div class="brand">KRAFTWERK_ELEKTRONIK</div>
+            <div class="system-title">DYSON_STEURUNG_v4.26</div>
+        </header>
 
-        <main class="core-interface">
-            <div class="system-badge">KRAFTWERK OS v2.0</div>
-            <h1 class="main-title glitch-text" id="main-title" data-target="MENSCH_MASCHINE">MENSCH_MASCHINE</h1>
-            <p class="subtitle" id="subtitle">Séquence cryptée en attente.</p>
+        <div class="telemetry left">
+            <div class="data-block">
+                <span class="label">KERN_TEMP (Fusion Core)</span>
+                <span class="value" id="temp-val">273.15 K</span>
+            </div>
+            <div class="data-block">
+                <span class="label">ENERGY_OUTPUT</span>
+                <span class="value" id="energy-val">0.00 GW</span>
+            </div>
+            <div class="data-block">
+                <span class="label">MATRIC_STATUS</span>
+                <span class="value" style="color: #ff0055;">STANDBY</span>
+            </div>
+        </div>
+
+        <div class="telemetry right">
+            <div class="data-block text-right">
+                <span class="label">PROGRAMM</span>
+                <span class="value">MENSCH_MASCHINE</span>
+            </div>
+            <div class="data-block text-right">
+                <span class="label">AUDIO_SYNTH</span>
+                <span class="value">BOING_BOUM_TCHAK</span>
+            </div>
+        </div>
+
+        <main class="core-control">
+            <div class="warning-light"></div>
+            <h1 class="main-headline" id="main-title">REAKTOR_BEREIT</h1>
+            <p class="status-msg" id="status-desc">ATTENTION : L'initialisation va canaliser 100% de l'énergie stellaire.</p>
             
-            <button class="cyber-btn" id="decrypt-btn">
-                <span class="btn-text" data-target="DÉCRYPTER_LE_MESSAGE">DÉCRYPTER_LE_MESSAGE</span>
+            <button class="launch-btn" id="launch-trigger">
+                <span class="btn-glow"></span>
+                <span class="btn-text">ZÜNDUNG (INITIALISER LA SPHÈRE)</span>
             </button>
         </main>
 
-        <footer class="bottom-bar">
-            <span>COORD: 50.8503° N, 4.3517° E</span>
-            <span>SECURE CONNEXION</span>
-            <span>SESSION: 2026-06-14</span>
+        <footer class="hud-footer">
+            <span>SYSTEM_PAPA_2026 // DIE ROBOTER</span>
+            <span id="progress-percent">00%</span>
         </footer>
     </div>
 
