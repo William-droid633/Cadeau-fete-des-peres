@@ -1,122 +1,59 @@
-*, *::before, *::after {
-    box-sizing: border-box;
+*, *::before, *::after { box-sizing: border-box; }
+
+body { 
+    margin: 0; 
+    background-color: #050505; 
+    color: #00ff00; 
+    font-family: 'Share Tech Mono', monospace; 
+    overflow: hidden; 
+    height: 100vh; 
+    width: 100vw; 
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    background-color: #000000;
-    color: #00ff00; /* Vert phosphore rétro */
-    font-family: 'Share Tech Mono', monospace;
-    overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+.crt-overlay { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%); 
+    background-size: 100% 4px; 
+    z-index: 10; pointer-events: none; 
 }
 
-/* Effet lignes CRT style écran d'ordinateur vintage */
-.crt-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    background-size: 100% 4px, 6px 100%;
-    z-index: 10;
-    pointer-events: none;
+#canvas-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+.terminal-interface { 
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: 5; display: flex; flex-direction: column; justify-content: space-between; 
+    padding: 30px; pointer-events: none; box-sizing: border-box; 
 }
 
-#canvas-container {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
+.matrix-header { 
+    display: flex; justify-content: space-between; 
+    font-size: 0.9rem; letter-spacing: 2px; 
+    border-bottom: 1px solid rgba(0, 255, 0, 0.3); padding-bottom: 5px; 
 }
 
-/* Superposition de l'interface utilisateur */
-.terminal-interface {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    display: block;
-    padding: 30px;
-    pointer-events: none;
+.console-content { 
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+    text-align: center; width: 90%; max-width: 600px; 
 }
 
-.matrix-header, .matrix-footer {
-    position: absolute;
-    width: calc(100% - 60px);
-    display: block;
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    border-bottom: 1px solid rgba(0, 255, 0, 0.3);
-    padding-bottom: 5px;
+.glitch-title { 
+    font-size: clamp(2.5rem, 6vw, 4.5rem); color: #00ff00; 
+    letter-spacing: 6px; margin: 0 0 20px 0; 
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5); 
 }
 
-.matrix-header { top: 30px; }
-.status-bit { float: left; }
-.date-bit { float: right; }
+.console-text { font-size: 1.2rem; color: #fff; letter-spacing: 1px; margin-bottom: 40px; }
 
-.matrix-footer {
-    bottom: 30px;
-    border-bottom: none;
-    border-top: 1px solid rgba(0, 255, 0, 0.3);
-    padding-top: 5px;
-    text-align: center;
-    color: #ff0000; /* Rouge vif style "The Man-Machine" */
+.kraftwerk-btn { 
+    pointer-events: auto; background: transparent; 
+    border: 2px solid #00ff00; color: #00ff00; 
+    padding: 15px 30px; font-family: 'Share Tech Mono', monospace; 
+    font-size: 1rem; letter-spacing: 3px; cursor: pointer; 
+    transition: all 0.2s; box-shadow: 0 0 15px rgba(0, 255, 0, 0.2); 
+    text-transform: uppercase;
 }
 
-.console-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: 90%;
-    max-width: 600px;
-}
-
-.glitch-title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: bold;
-    color: #00ff00;
-    letter-spacing: 6px;
-    margin: 0 0 20px 0;
-    text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-}
-
-.console-text {
-    font-size: 1.2rem;
-    color: #ffffff;
-    letter-spacing: 1px;
-    margin-bottom: 40px;
-    min-height: 2.4em;
-}
-
-/* Bouton minimaliste et technique */
-.kraftwerk-btn {
-    pointer-events: auto;
-    background: transparent;
-    border: 2px solid #ff0000;
-    color: #ff0000;
-    padding: 15px 30px;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem;
-    letter-spacing: 3px;
-    cursor: pointer;
-    position: relative;
-    transition: transform 0.2s, background-color 0.2s;
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-}
-
-.kraftwerk-btn:hover {
-    background-color: #ff0000;
-    color: #000000;
-    box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
-    transform: scale(1.03);
+.kraftwerk-btn:hover { 
+    background-color: #00ff00; color: #000; 
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.6); transform: scale(1.05); 
 }
