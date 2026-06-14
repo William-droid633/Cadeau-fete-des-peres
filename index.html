@@ -3,29 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KRAFTWERK // PATER // 2026</title>
+    <title>KRAFTWERK // SYSTEM_PATER_2026</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="crt-overlay"></div>
-    
+    <div id="loader">
+        <div class="loader-text" data-text="INITIALISATION DU NOYAU...">INITIALISATION DU NOYAU...</div>
+        <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+
     <div id="canvas-container"></div>
 
-    <div class="terminal-interface">
-        <header class="matrix-header">
-            <div class="status-bit">SYS.STATUS: ONLINE</div>
-            <div class="date-bit">DATE: 14.06.2026</div>
-        </header>
+    <div id="ui-layer" style="opacity: 0;">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
 
-        <main class="console-content">
-            <h1 class="glitch-title">SYSTEM_PAPA</h1>
-            <p class="console-text" id="typewriter">En attente d'activation du module...</p>
-            <button class="kraftwerk-btn" id="action-btn">LANCER LA SÉQUENCE</button>
+        <aside class="sidebar left-sidebar">
+            <div class="metric">
+                <span class="label">CPU.LOAD</span>
+                <span class="value" id="cpu-val">12%</span>
+            </div>
+            <div class="metric">
+                <span class="label">MEM.ALLOC</span>
+                <span class="value">0x4F2A</span>
+            </div>
+            <div class="metric">
+                <span class="label">NET.UPLINK</span>
+                <span class="value" style="color: var(--color-alert)">STABLE</span>
+            </div>
+        </aside>
+
+        <main class="core-interface">
+            <div class="system-badge">KRAFTWERK OS v2.0</div>
+            <h1 class="main-title glitch-text" id="main-title" data-target="MENSCH_MASCHINE">MENSCH_MASCHINE</h1>
+            <p class="subtitle" id="subtitle">Séquence cryptée en attente.</p>
+            
+            <button class="cyber-btn" id="decrypt-btn">
+                <span class="btn-text" data-target="DÉCRYPTER_LE_MESSAGE">DÉCRYPTER_LE_MESSAGE</span>
+            </button>
         </main>
+
+        <footer class="bottom-bar">
+            <span>COORD: 50.8503° N, 4.3517° E</span>
+            <span>SECURE CONNEXION</span>
+            <span>SESSION: 2026-06-14</span>
+        </footer>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>
